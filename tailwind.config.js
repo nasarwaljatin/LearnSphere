@@ -19,8 +19,30 @@ export default {
         mono: ["Roboto Mono", "monospace"],
         playwrite: ["Playwrite DE Grund", "cursive"],
         poppins: ["Poppins", "Inter", "sans-serif"],
+        display: ["Plus Jakarta Sans", "Inter", "sans-serif"],
+      },
+      keyframes: {
+        aurora: {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "33%": { transform: "translate(6%, -4%) scale(1.08)" },
+          "66%": { transform: "translate(-5%, 5%) scale(0.95)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "0% 50%" },
+          "100%": { backgroundPosition: "200% 50%" },
+        },
+      },
+      animation: {
+        aurora: "aurora 18s ease-in-out infinite",
+        shimmer: "shimmer 6s linear infinite",
       },
       colors: {
+        ink: {
+          950: "#05070d",
+          900: "#080b14",
+          800: "#0d1220",
+          700: "#141a2c",
+        },
         white: "#fff",
         black: "#000",
         transparent: "#ffffff00",
