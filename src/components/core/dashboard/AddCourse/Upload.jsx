@@ -3,6 +3,11 @@ import "video-react/dist/video-react.css";
 import { useDropzone } from "react-dropzone";
 import { Player } from "video-react";
 import { FiUploadCloud } from "react-icons/fi";
+import { toast } from "sonner";
+
+// Keep in sync with server/src/middlewares/validate-uploads.ts
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const MAX_LECTURE_BYTES = 100 * 1024 * 1024;
 
 const Upload = ({
   name,
@@ -61,7 +66,21 @@ const Upload = ({
         : pdf
         ? { "application/pdf": [".pdf"] }
         : {},
+    maxFiles: 1,
+    maxSize: video || pdf ? MAX_LECTURE_BYTES : MAX_IMAGE_BYTES,
     onDrop,
+    onDropRejected: (rejections) => {
+      const error = rejections[0]?.errors[0];
+      if (error?.code === "file-too-large") {
+        toast.error(
+          `File is too large. Maximum size is ${
+            video || pdf ? "100 MB" : "5 MB"
+          }.`
+        );
+      } else {
+        toast.error(error?.message || "This file type is not supported.");
+      }
+    },
   });
 
   useEffect(() => {

@@ -9,6 +9,7 @@ import { CONFIGS } from "./config/index.js";
 import { connect } from "./config/database.js";
 import { cloudinaryConnect } from "./config/cloudinary.js";
 import { connectDrive } from "./config/drive.js";
+import { MAX_UPLOAD_BYTES, validateUploads } from "./middlewares/validate-uploads.js";
 
 import swaggerUi from "swagger-ui-express";
 //@ts-ignore
@@ -59,9 +60,17 @@ app.use(
 app.use(
   fileUpload({
     useTempFiles: false,
-    // tempFileDir: "/tmp",
+    limits: { fileSize: MAX_UPLOAD_BYTES },
+    abortOnLimit: true,
+    limitHandler: (req: Request, res: Response) => {
+      res.status(413).json({
+        success: false,
+        message: `File is too large. Maximum size is ${MAX_UPLOAD_BYTES / (1024 * 1024)} MB.`,
+      });
+    },
   })
 );
+app.use(validateUploads);
 
 // Routes Middleware
 app.use("/api/v2", userRoutes);
