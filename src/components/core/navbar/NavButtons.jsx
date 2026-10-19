@@ -28,27 +28,30 @@ const NavButtons = ({ user, toggleTheme, pathname, token, theme }) => {
       {user &&
         user?.accountType !== "Instructor" &&
         user?.accountType !== "Admin" && (
-          <Link to={"/dashboard/cart"} className="relative text-slate-400">
+          <Link
+            to={"/dashboard/cart"}
+            aria-label="Cart"
+            className="relative grid p-2 transition-colors rounded-full place-items-center text-slate-300 hover:text-white hover:bg-white/5"
+          >
             <FaCartShopping className="size-5" />
             {totalItems > 0 && (
-              <span className="absolute grid w-5 h-5 overflow-hidden text-xs font-bold text-center text-teal-400 rounded-full -bottom-2 -right-3 place-items-center bg-richblack-700">
+              <span className="absolute -top-0.5 -right-0.5 grid min-w-[18px] h-[18px] px-1 text-[10px] font-bold rounded-full place-items-center bg-gradient-to-r from-teal-400 to-cyan-400 text-slate-950">
                 {totalItems}
               </span>
             )}
           </Link>
         )}
       {token === null && (
-        <Link to={"/login"}>
-          <button className="border-[1px] font-semibold border-cyan-700 bg-slate-800 bg-opacity-65 md:text-sm text-xs md:px-4 px-2 py-2 text-nowrap hover:bg-cyan-500 hover:text-slate-800 hover:bg-opacity-85 active:bg-opacity-70 text-richblack-50 rounded-md">
-            Log in
-          </button>
+        <Link
+          to={"/login"}
+          className="hidden px-3 py-1.5 text-sm font-medium transition-colors rounded-full sm:inline-block text-slate-300 hover:text-white hover:bg-white/5"
+        >
+          Log in
         </Link>
       )}
       {token === null && (
-        <Link to={"/signup"}>
-          <button className="border-[1px] font-semibold border-cyan-700 bg-slate-800 bg-opacity-65 md:text-sm text-xs md:px-4 px-1 text-nowrap py-2 hover:bg-cyan-500 hover:bg-opacity-85 hover:text-slate-800 active:bg-opacity-70 text-richblack-50 rounded-md">
-            Sign up
-          </button>
+        <Link to={"/signup"} className="btn-primary !px-4 !py-1.5">
+          Sign up
         </Link>
       )}
       {token !== null && <ProfileDropdown />}

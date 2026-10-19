@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { getTaggedCourses } from "../../services/operations/courseDetailsAPI";
 import { useNavigate } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
@@ -123,64 +124,52 @@ const SearchBox = ({ setOpenBox }) => {
 
   const query = searchValue.trim();
 
-  return (
+  return createPortal(
     <div
       onClick={closeBox}
-      className="fixed text-slate-300 !mt-14 pt-5 grid w-screen h-screen place-items-center inset-0 z-[1000] bg-slate-950/70"
+      className="fixed inset-0 z-[1000] flex items-start justify-center px-4 pt-[12vh] text-slate-300 bg-ink-950/70 backdrop-blur-sm"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-[350px] md:w-[400px] lg:w-[500px] h-auto min-h-[200px] shadow-md flex gap-x-2 flex-col shadow-slate-950 bg-gradient-to-br from-slate-800 to-slate-900 rounded-md px-4 pt-4 pb-10 text-sm items-start justify-center  scrollbar-hide"
+        className="relative flex flex-col w-full max-w-xl overflow-hidden text-sm rounded-2xl border border-white/10 bg-ink-800/95 shadow-2xl shadow-black/60"
       >
-        <span className="absolute bottom-0.5 right-2 font-poppins text-xs bg-neutral-900 px-2 py-1 rounded-md">
-          <kbd className="font-poppins px-1.5 py-0.5 rounded-md bg-black/55 text-teal-200/75 font-medium">
-            ↑↓
-          </kbd>{" "}
-          navigate{" "}
-          <kbd className="font-poppins px-1.5 py-0.5 rounded-md bg-black/55 text-teal-200/75 font-medium">
-            Enter
-          </kbd>{" "}
-          open{" "}
-          <kbd className="font-poppins px-1.5 py-0.5 rounded-md bg-black/55 text-rose-200/75 font-medium">
-            ESC
-          </kbd>{" "}
-          close
-        </span>
-
-        <span className="absolute -top-3 -right-3 text-slate-300">
-          <button onClick={closeBox} aria-label="Close search">
-            <MdClose className="p-1 text-2xl rounded-full bg-slate-700 hover:bg-slate-800 hover:text-slate-200 shadow-md shadow-slate-950" />
-          </button>
-        </span>
-        <h1 className="text-lg mb-3 font-medium text-teal-400 font-inter tracking-wide w-full">
-          Find your courses here
-        </h1>
-        <div className="w-full h-full p-4 flex items-center justify-start bg-gradient-to-br from-slate-700 to-slate-800 rounded-md shadow-md shadow-slate-950">
-          <div className="w-[40px] text-xl flex items-center">
-            <BsSearch className="relative text-teal-400" />
-          </div>
+        <div className="flex items-center gap-3 px-4 border-b border-white/10">
+          <BsSearch className="text-lg text-teal-300 shrink-0" />
           <input
             ref={inputSearchRef}
             type="text"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Search by course name or tag, e.g. ML, DSA"
+            placeholder="Search courses by name or tag, e.g. ML, DSA"
             aria-label="Search courses"
-            className="flex-1 px-2 py-1 bg-transparent placeholder:text-slate-400 outline-none tracking-wide"
+            className="flex-1 py-4 text-base bg-transparent outline-none placeholder:text-slate-500 text-slate-100"
           />
           {status === "loading" && (
             <span className="w-4 h-4 border-2 rounded-full border-teal-400 border-t-transparent animate-spin" />
           )}
+          <button
+            onClick={closeBox}
+            aria-label="Close search"
+            className="p-1 rounded-md text-slate-500 hover:text-slate-200 hover:bg-white/5"
+          >
+            <MdClose className="text-xl" />
+          </button>
         </div>
 
+        <div className="px-2 pb-2 min-h-[120px]">
+          {status === "idle" && (
+            <p className="px-3 py-8 text-center text-slate-500">
+              Start typing to find a course.
+            </p>
+          )}
         {status === "done" && suggestions.length === 0 && (
-          <p className="w-full mt-4 text-center text-slate-400">
+          <p className="px-3 py-8 text-center text-slate-400">
             No courses found for &quot;{query}&quot;
           </p>
         )}
         {status === "error" && (
-          <p className="w-full mt-4 text-center text-rose-300">
+          <p className="px-3 py-8 text-center text-rose-300">
             Search is unavailable right now. Please try again.
           </p>
         )}
@@ -188,7 +177,7 @@ const SearchBox = ({ setOpenBox }) => {
         {suggestions.length > 0 && (
           <ul
             role="listbox"
-            className="w-full px-2 py-2 mt-3 overflow-y-auto rounded-md max-h-[50vh] bg-slate-800 bg-opacity-75 backdrop-blur-md text-[#cdf1ff]"
+            className="w-full pt-2 overflow-y-auto max-h-[50vh] text-slate-200"
           >
             {suggestions.map((suggestion, index) => (
               <motion.li
@@ -201,10 +190,10 @@ const SearchBox = ({ setOpenBox }) => {
                 aria-selected={index === activeIndex}
                 onMouseEnter={() => setActiveIndex(index)}
                 onClick={() => openCourse(suggestion.courseId)}
-                className={`flex items-center gap-x-3 px-2 py-2 my-1 text-xs rounded-md md:text-sm hover:cursor-pointer transition-colors duration-100 ${
+                className={`flex items-center gap-x-3 px-3 py-2.5 text-xs rounded-xl md:text-sm hover:cursor-pointer transition-colors duration-100 ${
                   index === activeIndex
-                    ? "bg-slate-600 text-teal-300"
-                    : "bg-slate-700"
+                    ? "bg-white/[0.07] text-white"
+                    : "text-slate-300"
                 }`}
               >
                 {suggestion.thumbnail && (
@@ -212,7 +201,7 @@ const SearchBox = ({ setOpenBox }) => {
                     src={suggestion.thumbnail}
                     alt=""
                     loading="lazy"
-                    className="object-cover w-12 h-8 rounded"
+                    className="object-cover w-14 h-9 rounded-md"
                   />
                 )}
                 <div className="flex flex-col flex-1 min-w-0">
@@ -234,8 +223,25 @@ const SearchBox = ({ setOpenBox }) => {
             ))}
           </ul>
         )}
+        </div>
+
+        <div className="flex items-center gap-4 px-4 py-2.5 text-[11px] border-t border-white/10 text-slate-500 bg-black/20">
+          <span>
+            <kbd className="px-1.5 py-0.5 mr-1 rounded border border-white/10 bg-white/5">↑↓</kbd>
+            navigate
+          </span>
+          <span>
+            <kbd className="px-1.5 py-0.5 mr-1 rounded border border-white/10 bg-white/5">Enter</kbd>
+            open
+          </span>
+          <span>
+            <kbd className="px-1.5 py-0.5 mr-1 rounded border border-white/10 bg-white/5">Esc</kbd>
+            close
+          </span>
+        </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

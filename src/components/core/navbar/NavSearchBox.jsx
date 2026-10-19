@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { AiOutlineFileSearch } from "react-icons/ai";
+import { AiOutlineSearch } from "react-icons/ai";
 import SearchBox from "../../common/SearchBox";
 
 const NavSearchBox = ({ openBox, setOpenBox }) => {
@@ -25,20 +25,21 @@ const NavSearchBox = ({ openBox, setOpenBox }) => {
   }, [setOpenBox]);
 
   return (
-    <div
-      onClick={handleOnClick}
-      className="relative flex items-center ml-2  text-teal-500 text-nowrap text-sm md:gap-x-2 hover:cursor-pointer gap-x-1"
-    >
-      <AiOutlineFileSearch className="text-xl md:text-2xl" /> Courses
-      <span>
-        <kbd className="hidden sm:block text-xs bg-slate-800 text-slate-300 rounded-md py-2 px-2 shadow-inner shadow-slate-500">
-          Ctrl + K
+    <>
+      <button
+        onClick={handleOnClick}
+        aria-label="Search courses"
+        className="flex items-center gap-2 py-1.5 pl-3 pr-1.5 text-sm transition-colors rounded-full text-slate-400 glass hover:text-slate-200 hover:border-white/20"
+      >
+        <AiOutlineSearch className="text-lg" />
+        <span className="hidden md:inline">Search courses</span>
+        <kbd className="hidden sm:inline-block rounded-full border border-white/10 bg-white/5 px-2 py-0.5 font-inter text-[10px] text-slate-400">
+          Ctrl K
         </kbd>
-      </span>
-      <div className="absolute -bottom-14">
-        {openBox && <SearchBox setOpenBox={setOpenBox} />}
-      </div>
-    </div>
+      </button>
+      {/* Rendered outside the trigger so overlay clicks don't bubble into it and reopen the box */}
+      {openBox && <SearchBox setOpenBox={setOpenBox} />}
+    </>
   );
 };
 

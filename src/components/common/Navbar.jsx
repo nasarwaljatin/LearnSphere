@@ -40,48 +40,56 @@ const Navbar = () => {
     return matchPath({ path: route }, location.pathname);
   };
 
+  // Close the mobile menu after navigating
+  useEffect(() => {
+    setIsNavbarOpen(false);
+  }, [pathname]);
+
   return (
-    <div
-      className={`flex fixed top-0 z-[100] h-14 w-full px-2 sm:px-9 lg:px-20 mx-auto items-center justify-between border-b-[1px] border-slate-700 shadow-sm shadow-slate-900 bg-[#10101b]  bg-opacity-80 backdrop-blur-sm`}
-    >
-      {/* Logo Image */}
-      <Link to={"/"}>
-        <img
-          src={Logo}
-          alt="LearnSphere"
-          className="md:w-[160px] w-[95px]"
-          loading="lazy"
+    <header className="fixed top-0 z-[100] w-full h-14 border-b border-white/[0.06] bg-ink-950/70 backdrop-blur-xl">
+      <div className="flex items-center justify-between h-full gap-3 px-3 mx-auto sm:px-6 lg:px-10 max-w-[1400px]">
+        {/* Logo Image */}
+        <Link to={"/"} className="shrink-0">
+          <img
+            src={Logo}
+            alt="LearnSphere"
+            className="md:w-[150px] w-[100px]"
+            loading="lazy"
+          />
+        </Link>
+
+        {/* nav links */}
+        <NavLinks
+          isNavbarOpen={isNavbarOpen}
+          subLinks={subLinks}
+          matchRoute={matchRoute}
+          token={token}
         />
-      </Link>
 
-      {/* Toggle Button for Navbar */}
-      <button
-        className={`absolute p-1 z-30 text-lg rounded-full right-2 top-16 text-slate-900 lg:hidden bg-[#a7caeb] shadow-md shadow-slate-950 bg-opacity-95 backdrop-blur-md`}
-        onClick={() => setIsNavbarOpen((prev) => !prev)}
-      >
-        {isNavbarOpen ? <MdClose /> : <RiMenuUnfold2Fill />}
-      </button>
+        <div className="flex items-center gap-2 md:gap-4">
+          {/* Search Box */}
+          <NavSearchBox openBox={openBox} setOpenBox={setOpenBox} />
 
-      {/* nav links */}
+          {/* Buttons (Login, Signup, Dashboard) */}
+          <NavButtons
+            pathname={pathname}
+            toggleTheme={toggleTheme}
+            token={token}
+            user={user}
+            theme={theme}
+          />
 
-      <NavLinks
-        isNavbarOpen={isNavbarOpen}
-        subLinks={subLinks}
-        matchRoute={matchRoute}
-      />
-
-      {/* Search Box */}
-      <NavSearchBox openBox={openBox} setOpenBox={setOpenBox} />
-
-      {/* Buttons (Login, Signup, Dashboard) */}
-      <NavButtons
-        pathname={pathname}
-        toggleTheme={toggleTheme}
-        token={token}
-        user={user}
-        theme={theme}
-      />
-    </div>
+          {/* Toggle Button for Navbar */}
+          <button
+            aria-label={isNavbarOpen ? "Close menu" : "Open menu"}
+            className="grid p-2 text-lg rounded-full lg:hidden place-items-center text-slate-200 glass"
+            onClick={() => setIsNavbarOpen((prev) => !prev)}
+          >
+            {isNavbarOpen ? <MdClose /> : <RiMenuUnfold2Fill />}
+          </button>
+        </div>
+      </div>
+    </header>
   );
 };
 
