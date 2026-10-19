@@ -11,11 +11,16 @@ LearnSphere is a full-stack EdTech platform where learners can discover and enro
 ## ✨ Features
 
 - **Student Features**
-  - Browse and enroll in courses via Razorpay payment integration
-  - Watch lecture videos with a built-in video player
-  - Read PDF study materials via Google Drive API
-  - Track course progress
-  - Rate and review courses
+  - Browse and enroll in courses via Razorpay checkout (free courses enroll instantly)
+  - **Custom lecture viewer** for videos and PDFs:
+    - Playback speed (0.5x – 2x, remembered across lectures), ±10s skip
+    - Resumes each video where you left off
+    - Previous / next lecture navigation (`Shift+P` / `Shift+N`) and "Next Lecture" on video end
+    - PDF viewer with fullscreen and open-in-new-tab, for Google Drive and Cloudinary PDFs
+    - Mark any lecture (video or PDF) complete, with a live course progress bar
+  - **Instant course search** (`Ctrl+K`): 300ms debounced, searches course names and tags,
+    cancels stale requests, caches results, keyboard navigation and match highlighting
+  - Track course progress, rate and review courses
 
 - **Instructor Features**
   - Create, edit, and manage courses with sections & sub-sections
@@ -24,10 +29,38 @@ LearnSphere is a full-stack EdTech platform where learners can discover and enro
 
 - **General**
   - JWT-based authentication (signup, login, OTP email verification, forgot password)
+  - Rate limiting on OTP and password-reset endpoints
   - Dark-themed, responsive UI with Framer Motion animations
   - Course catalog with category filtering
   - Contact form
   - Swagger API documentation
+
+---
+
+## 🔒 Payments & Uploads
+
+**Razorpay flow**
+
+1. `POST /payment/capturePayment` validates the courses (published, not already owned) and
+   computes the amount **on the server**. The buyer and course ids are pinned to the
+   Razorpay order's `notes`.
+2. The client opens Razorpay Checkout with the returned `order_id`.
+3. `POST /payment/verifyPayment` checks the HMAC-SHA256 signature with a constant-time
+   comparison, then fetches the order from Razorpay and enrolls the user in the courses
+   **stored on the order** — never a course list sent by the client.
+4. Enrollment is idempotent (`$addToSet` + an already-enrolled check), so retries or
+   double clicks never enroll twice. Receipt and enrollment emails are sent after verification.
+
+**Upload validation** — every multipart upload is checked before it reaches
+Cloudinary / Google Drive:
+
+| Field | Allowed | Max size |
+|-------|---------|----------|
+| `thumbnailImage` | jpg, png, webp, gif | 5 MB |
+| `displayPicture` | jpg, png, webp, gif | 1 MB |
+| `video` (lecture) | mp4 or pdf | 100 MB |
+
+Both the extension and the MIME type must match; unknown fields are rejected.
 
 ---
 
@@ -173,7 +206,7 @@ LearnSphere/
 │   └── src/
 │       ├── config/          # DB, Cloudinary, Drive, env config
 │       ├── controllers/     # Route handler logic
-│       ├── middlewares/     # Auth, rate limiting
+│       ├── middlewares/     # Auth, rate limiting, upload validation
 │       ├── models/          # Mongoose schemas
 │       ├── routes/          # Express route definitions
 │       ├── mail/            # Email templates
