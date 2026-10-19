@@ -590,19 +590,18 @@ export const getFullCourseDetails = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// Get courses acccording to Tags:
+// Course search (navbar Ctrl+K search box):
 
+const MAX_SEARCH_RESULTS = 8;
+const MAX_QUERY_LENGTH = 60;
+
+// Search published courses by name or tag. Name matches that start with the
+// query are ranked first, then other name matches, then tag-only matches.
 export const getTaggedCourses = async (req: AuthRequest, res: Response) => {
   try {
     const { searchQuery } = req.query;
 
-    console.log("Search Query is: ", searchQuery);
-
-    if (
-      !searchQuery ||
-      Array.isArray(searchQuery) ||
-      typeof searchQuery !== "string"
-    ) {
+    if (typeof searchQuery !== "string" || !searchQuery.trim()) {
       res.status(400).json({
         success: false,
         message: "Search Query is required and must be a string.",
@@ -610,48 +609,51 @@ export const getTaggedCourses = async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    const queryString = searchQuery as string;
+    const queryString = searchQuery.trim().slice(0, MAX_QUERY_LENGTH);
 
     // Escape the search query to prevent regex injection issues
     const escapedQuery = queryString.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    if (
-      !searchQuery ||
-      Array.isArray(searchQuery) ||
-      typeof searchQuery !== "string"
-    ) {
-      res.status(400).json({
-        success: false,
-        message: "Search Query is required and must be a string.",
-      });
-      return;
-    }
-
     const regex = new RegExp(escapedQuery, "i");
+    const prefixRegex = new RegExp(`^${escapedQuery}`, "i");
 
-    // Query the Course collection
     const courseDetails = await Course.find({
-      tag: {
-        $in: [regex],
-      },
-    });
+      status: "Published",
+      $or: [{ courseName: regex }, { tag: regex }],
+    })
+      .select("courseName tag thumbnail price instructor")
+      .populate("instructor", "firstName lastName")
+      .limit(MAX_SEARCH_RESULTS * 3)
+      .lean();
 
-    if (courseDetails.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: `No courses found for the tag: "${searchQuery}"`,
+    const rank = (course: { courseName: string }) =>
+      prefixRegex.test(course.courseName) ? 0 : regex.test(course.courseName) ? 1 : 2;
+
+    const results = courseDetails
+      .sort((a, b) => rank(a) - rank(b))
+      .slice(0, MAX_SEARCH_RESULTS)
+      .map((course) => {
+        const instructor = course.instructor as unknown as
+          | { firstName?: string; lastName?: string }
+          | undefined;
+        return {
+          courseId: course._id,
+          courseName: course.courseName,
+          tags: course.tag,
+          thumbnail: course.thumbnail,
+          price: course.price,
+          instructorName: instructor
+            ? `${instructor.firstName ?? ""} ${instructor.lastName ?? ""}`.trim()
+            : "",
+        };
       });
-    }
 
-    // Map the course details to only include courseId and tags
-    const results = courseDetails.map((course) => ({
-      courseId: course._id,
-      tags: course.tag,
-      courseName: course.courseName,
-    }));
-
+    // An empty result is a valid answer for a search, not an error.
+    res.set("Cache-Control", "public, max-age=30");
     return res.status(200).json({
       success: true,
-      message: "All courses related to tag have been fetched successfully.",
+      message: results.length
+        ? "Matching courses have been fetched successfully."
+        : `No courses found for "${queryString}"`,
       data: results,
     });
   } catch (error) {

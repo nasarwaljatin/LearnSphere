@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 
 import { updateCompletedLectures } from "../../slices/viewCourseSlice";
-import { apiConnector } from "../apiConnector";
+import { apiConnector, axiosInstance } from "../apiConnector";
 import { courseEndpoints } from "../apis";
 
 const {
@@ -26,26 +26,18 @@ const {
   GET_TAGGED_COURSES,
 } = courseEndpoints;
 
-export const getTaggedCourses = async (searchQuery) => {
-  // console.log("query in frontend: ", searchQuery);
-
-  let result = [];
-  try {
-    const response = await apiConnector("GET", GET_TAGGED_COURSES, null, null, {
-      searchQuery: searchQuery,
-    });
-    // console.log("TAG COURSES RESPONSE:", response);
-
-    if (!response.data.success) {
-      throw new Error("Could not fetch tagged courses.");
-    }
-    result = response.data.data;
-  } catch (error) {
-    // console.log("TAG COURSES ERROR", error);
-
-    toast(error.response.data.message);
+// Search courses by name/tag. Accepts an AbortSignal so a newer keystroke can
+// cancel an in-flight request. Errors are thrown to the caller (no toast) so
+// the search box can show its own inline state.
+export const getTaggedCourses = async (searchQuery, signal) => {
+  const response = await axiosInstance.get(GET_TAGGED_COURSES, {
+    params: { searchQuery },
+    signal,
+  });
+  if (!response.data.success) {
+    throw new Error("Could not fetch courses.");
   }
-  return result;
+  return response.data.data ?? [];
 };
 
 export const getAllCourses = async () => {
