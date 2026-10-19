@@ -16,14 +16,19 @@ const ReviewSlider = () => {
   useEffect(() => {
     const fetchAllReviews = async () => {
       setLoading(true);
-      const reviewData = await apiConnector(
-        "GET",
-        ratingsEndpoints.REVIEWS_DETAILS_API
-      );
-      if (reviewData?.data?.success) {
-        setReviews(reviewData?.data?.allRatings?.data);
+      try {
+        const reviewData = await apiConnector(
+          "GET",
+          ratingsEndpoints.REVIEWS_DETAILS_API
+        );
+        if (reviewData?.data?.success) {
+          setReviews(reviewData?.data?.allRatings?.data ?? []);
+        }
+      } catch {
+        setReviews([]);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchAllReviews();
   }, []);

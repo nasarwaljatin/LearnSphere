@@ -38,7 +38,7 @@ const NavLinks = ({ isNavbarOpen, subLinks, matchRoute }) => {
                   </div>
 
                   <motion.div className="invisible absolute left-1/2 lg:top-1/2 -top-10 lg:-translate-x-1/2 -translate-x-[130%] translate-y-[34px] flex flex-col rounded-xl bg-slate-400 bg-opacity-85 px-2 py-3 text-slate-800 opacity-0 transition-all duration-50 group-hover:visible group-hover:opacity-100 lg:w-[250px] max-h-fit md:w-[200px] w-[150px] z-10 gap-y-3">
-                    {subLinks.length ? (
+                    {subLinks?.length ? (
                       subLinks.map((subLink, index) => (
                         <motion.div
                           variants={listitemVariants}
