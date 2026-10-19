@@ -4,6 +4,7 @@ import GetAvgRating from "../../../utils/avgRating";
 import RatingStars from "../../common/RatingStars";
 import { motion } from "framer-motion";
 
+// `Width` is passed by grid layouts (card fills its cell); sliders get a fixed width.
 const CourseCard = ({ course, Height, Width }) => {
   const [avgRatingCount, setAvgRatingCount] = useState(0);
 
@@ -12,52 +13,52 @@ const CourseCard = ({ course, Height, Width }) => {
     setAvgRatingCount(count);
   }, [course]);
 
+  const price = course?.price ?? 0;
+
   return (
     <Link
       to={`/courses/${course._id}`}
-      className="inline-block mx-1 transition-all duration-200 transform md:mx-4 hover:scale-95"
+      className={`group inline-block align-top whitespace-normal ${
+        Width ? "w-full" : "w-[260px] md:w-[320px] mr-5"
+      }`}
     >
       <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{
-          duration: 2,
-          delay: 0.3,
-          type: "spring",
-          stiffness: 60,
-          damping: 25,
-        }}
-        className={`${Width && "mx-auto"}`}
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="overflow-hidden card card-hover"
       >
-        <div
-          className={`rounded-lg
-            ${Width ? `${Width}` : "w-[150px]"}
-            relative md:w-[320px] lg:w-[400px]`}
-        >
+        <div className="relative overflow-hidden">
           <img
             src={course?.thumbnail}
-            alt="Course Thumbnail"
-            className={`${Height} w-full rounded-xl object-cover`}
+            alt={course?.courseName}
+            loading="lazy"
+            className={`${
+              Height || "h-[180px]"
+            } w-full object-cover transition-transform duration-500 group-hover:scale-105`}
           />
-          <div className="absolute bottom-0 w-full h-[30%] bg-gradient-to-t from-[#262631] to-transparent rounded-b-xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-ink-950/80 via-transparent to-transparent" />
+          <span className="absolute px-3 py-1 text-xs font-semibold rounded-full top-3 right-3 bg-ink-950/70 backdrop-blur text-teal-200 ring-1 ring-white/10">
+            {price === 0 ? "Free" : `₹${price.toLocaleString("en-IN")}`}
+          </span>
         </div>
-        <div className="flex flex-col md:w-[320px] lg:w-[400px] w-[150px] gap-1 px-1 py-3">
-          <p className="overflow-hidden text-sm text-nowrap text-ellipsis md:text-lg text-slate-200 font-poppins">
+        <div className="flex flex-col gap-2 p-4">
+          <h3 className="font-semibold leading-snug line-clamp-2 font-display text-slate-100 group-hover:text-teal-200 transition-colors">
             {course?.courseName}
-          </p>
+          </h3>
           <p className="text-sm text-slate-400">
             {course?.instructor?.firstName} {course?.instructor?.lastName}
           </p>
-          <div className="flex flex-col items-start gap-2 md:items-center md:flex-row">
-            <span className="text-teal-500">{avgRatingCount || 0}</span>
+          <div className="flex items-center gap-2 text-sm">
+            <span className="font-semibold text-amber-300">
+              {Number(avgRatingCount || 0).toFixed(1)}
+            </span>
             <RatingStars Review_Count={avgRatingCount} />
-            <span className="text-sm text-slate-400">
-              {course?.ratingAndReviews?.length} Ratings
+            <span className="text-xs text-slate-500">
+              ({course?.ratingAndReviews?.length ?? 0})
             </span>
           </div>
-          <p className="text-xs text-sky-200 md:text-base sm:text-sm">
-            Rs. {course?.price.toLocaleString("en-IN")}
-          </p>
         </div>
       </motion.div>
     </Link>

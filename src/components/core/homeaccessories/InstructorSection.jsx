@@ -6,36 +6,41 @@ import { motion } from "framer-motion";
 
 const InstructorSection = () => {
   return (
-    <div className="flex flex-col items-center justify-around mx-auto my-32 sm:flex-row">
-      <img
-        src={ins_img}
-        alt="instructor"
-        className="sm:w-1/2 w-4/5 lg:w-[500px] relative instructorImg"
-      />
+    <div className="grid items-center gap-14 py-24 md:grid-cols-2">
       <motion.div
-        initial={{ x: "100%", opacity: 0 }}
-        whileInView={{ x: "0%", opacity: 1 }}
-        transition={{
-          duration: 0.7,
-          type: "spring",
-          stiffness: 60,
-          damping: 25,
-        }}
-        className="relative sm:w-2/5 w-[3/5] my-10 h-full sm:items-start items-center sm:my-auto flex flex-col sm:justify-center justify-start text-start"
+        initial={{ opacity: 0, x: -30 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.6 }}
+        className="relative mx-auto w-4/5 md:w-full"
       >
-        <p className="text-4xl text-white font-inter">
-          Become an <br />
-          <HighlightText text={" Instructor"} />
-        </p>
-        <p className="text-slate-400 font-inter mt-3 text-sm mb-10 w-[60%] sm:w-[80%]">
-          Instructors from around the world teach millions of students on
-          LearnSphere. We provide the tools and skills to teach what you love.
+        <div className="absolute -inset-6 rounded-[2rem] bg-gradient-to-tr from-indigo-500/25 to-teal-500/20 blur-2xl" />
+        <img
+          src={ins_img}
+          alt="Instructor"
+          className="relative object-cover w-full border rounded-3xl border-white/10 aspect-[4/5] md:aspect-auto"
+        />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, x: 30 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.6 }}
+        className="flex flex-col items-center text-center md:items-start md:text-start"
+      >
+        <span className="eyebrow">For instructors</span>
+        <h2 className="mt-4 section-title">
+          Become an
+          <HighlightText text={"Instructor"} />
+        </h2>
+        <p className="max-w-md mt-4 mb-8 text-slate-400">
+          Instructors from around the world teach students on LearnSphere. We
+          provide the tools to upload videos and PDFs, build structured courses
+          and track how your students are doing.
         </p>
         <CTAButton active={true} linkto={"/signup"}>
-          <div className="flex gap-3 items-center font-playwrite text-[13px]">
-            Start Teaching Today
-            <FaArrowRight />
-          </div>
+          Start Teaching Today
+          <FaArrowRight />
         </CTAButton>
       </motion.div>
     </div>

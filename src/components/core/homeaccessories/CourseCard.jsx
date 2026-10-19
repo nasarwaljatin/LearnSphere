@@ -2,46 +2,34 @@ import React from "react";
 import { IoIosPeople } from "react-icons/io";
 import { IoBookSharp } from "react-icons/io5";
 
-const CourseCard = (props) => {
-  const { heading, desc, lessonNum, level, active } = props;
-
+const CourseCard = ({ heading, desc, lessonNum, level, active }) => {
   return (
     <div
-      className={`w-[280px] flex font-inter flex-col h-[270px] sm:w-[280px] sm:h-[260px] justify-between  ${
+      className={`relative flex flex-col justify-between h-full p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 ${
         active
-          ? "bg-gradient-to-bl from-[#acd6c5] via-[#e2e7e5] to-[#bde7d6] activeCard"
-          : "bg-slate-800 shadow-md shadow-slate-200"
-      }  hover:cursor-pointer transition-all hover:scale-95 duration-300`}
+          ? "border-teal-400/50 bg-gradient-to-b from-teal-400/[0.12] to-indigo-400/[0.04] shadow-[0_16px_40px_rgba(20,184,166,0.18)]"
+          : "border-white/10 bg-white/[0.03] hover:border-white/20"
+      }`}
     >
-      <div className="flex flex-col p-4 gap-y-3">
-        <p
-          className={`text-[17px] ${
-            active ? "text-slate-900" : "text-slate-200"
-          } font-semibold`}
-        >
+      <div className="flex flex-col gap-3">
+        <h3 className="text-lg font-semibold font-display text-slate-100">
           {heading}
-        </p>
-        <p
-          className={`${
-            active ? "text-slate-500" : "text-slate-500"
-          } text-sm font-poppins font-medium`}
-        >
-          {desc}
-        </p>
+        </h3>
+        <p className="text-sm leading-relaxed text-slate-400">{desc}</p>
       </div>
       <div
-        className={`px-4 py-3 flex border-t-[1px] text-[13px] font-medium border-dashed border-slate-600 flex-row ${
-          active ? "text-blue-200" : "text-slate-400"
-        } justify-between`}
+        className={`flex justify-between pt-4 mt-6 text-[13px] font-medium border-t border-white/10 ${
+          active ? "text-teal-200" : "text-slate-400"
+        }`}
       >
-        <p className="flex flex-row items-center gap-2">
-          <IoIosPeople className="size-6" />
+        <span className="flex items-center gap-2">
+          <IoIosPeople className="size-5" />
           {level}
-        </p>
-        <p className="flex flex-row items-center gap-2">
+        </span>
+        <span className="flex items-center gap-2">
           <IoBookSharp className="size-4" />
           {lessonNum} Lessons
-        </p>
+        </span>
       </div>
     </div>
   );

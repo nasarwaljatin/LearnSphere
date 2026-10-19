@@ -98,135 +98,116 @@ const Catalog = () => {
     );
   }
 
+  const selectedCategory = catalogPageData?.data?.selectedCategory;
+  const tabs = [
+    { id: 1, label: "Most Popular" },
+    { id: 2, label: "Latest" },
+  ];
+
   return (
     <>
-      <div className="flex flex-col min-h-screen mt-14">
-        <div className="fixed  z-[200]">
+      <div className="flex flex-col min-h-screen text-white mt-14 bg-ink-950">
+        <div className="fixed z-[200]">
           <BounceToTop />
         </div>
-        {/* Hero section or section: 0 */}
-        <div className="box-content px-4 bg-richblack-800">
+
+        {/* Hero */}
+        <section className="relative overflow-hidden border-b border-white/[0.06]">
+          <div className="absolute inset-0 bg-grid" />
+          <div className="aurora-blob -top-32 right-0 h-[320px] w-[520px] bg-teal-500/15" />
+          <div className="aurora-blob -bottom-40 -left-20 h-[300px] w-[400px] bg-indigo-500/15 [animation-delay:-8s]" />
           <motion.div
-            initial={{ x: 70, y: -70, opacity: 0 }}
-            animate={{ x: 0, y: 0, opacity: 1 }}
-            transition={{
-              duration: 1,
-              delay: 0.4,
-              type: "spring",
-              stiffness: 60,
-              damping: 25,
-            }}
-            className="mx-auto flex min-h-[215px] max-w-maxContentTab flex-col justify-center gap-4 lg:max-w-maxContent"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="relative flex flex-col justify-center w-11/12 gap-4 py-16 mx-auto max-w-maxContent md:py-20"
           >
-            <p className="text-xs md:text-sm text-richblack-300">
-              {`Home / Catalog / `}
-              <span className="text-teal-400">
-                {catalogPageData?.data?.selectedCategory?.name}
+            <nav className="flex items-center gap-2 text-xs text-slate-500 md:text-sm">
+              <span>Home</span>
+              <span>/</span>
+              <span>Catalog</span>
+              <span>/</span>
+              <span className="text-teal-300">{selectedCategory?.name}</span>
+            </nav>
+            <h1 className="font-display text-4xl font-extrabold tracking-tight md:text-5xl">
+              {selectedCategory?.name}
+            </h1>
+            <p className="max-w-3xl text-base md:text-lg text-slate-400">
+              {selectedCategory?.description}
+            </p>
+            <div className="flex gap-3 mt-2 text-xs text-slate-400">
+              <span className="px-3 py-1 rounded-full glass">
+                {selectedCategory?.courses?.length ?? 0} courses
               </span>
-            </p>
-            <p className="text-2xl md:text-3xl text-richblack-5">
-              {catalogPageData?.data?.selectedCategory?.name}
-            </p>
-            <p className="max-w-[860px] md:text-base text-sm text-richblack-200">
-              {catalogPageData?.data?.selectedCategory?.description}
-            </p>
+            </div>
           </motion.div>
-        </div>
+        </section>
 
         {/* Section: 1 */}
-        <div className="box-content w-full px-4 py-12 mx-auto max-w-maxContentTab lg:max-w-maxContent">
-          <motion.div
-            initial={{ x: -100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{
-              duration: 1,
-              type: "spring",
-              stiffness: 60,
-              damping: 25,
-            }}
-            className="text-xl font-bold md:text-2xl text-slate-300 lg:text-4xl"
-          >
-            Courses To Get You Started
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              duration: 1,
-              delay: 0.5,
-              type: "spring",
-              stiffness: 60,
-              damping: 25,
-            }}
-            className="flex my-4 text-sm border-b border-b-richblack-600"
-          >
-            <p
-              className={`px-4 py-2 cursor-pointer ${
-                active === 1
-                  ? "border-b border-b-teal-300 text-teal-400"
-                  : "text-richblack-50"
-              }`}
-              onClick={() => {
-                setActive(1);
-                handleActiveChange(1);
-              }}
-            >
-              Most Popular
-            </p>
-            <p
-              className={`px-4 py-2 cursor-pointer ${
-                active === 2
-                  ? "border-b border-b-teal-300 text-teal-400"
-                  : "text-richblack-50"
-              }`}
-              onClick={() => {
-                setActive(2);
-                handleActiveChange(2);
-              }}
-            >
-              Latest
-            </p>
-          </motion.div>
+        <section className="w-11/12 py-16 mx-auto max-w-maxContent">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <h2 className="text-2xl font-bold tracking-tight font-display md:text-3xl">
+              Courses to get you started
+            </h2>
+            <div className="flex gap-1 p-1 rounded-full w-fit glass">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActive(tab.id);
+                    handleActiveChange(tab.id);
+                  }}
+                  className={`px-4 py-1.5 text-sm rounded-full transition-all ${
+                    active === tab.id
+                      ? "bg-white text-slate-900 font-semibold"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
-          <CourseSlider
-            Id={"slider1"}
-            Courses={catalogPageData?.data?.selectedCategory?.courses}
-          />
-        </div>
+          <div className="mt-16">
+            <CourseSlider Id={"slider1"} Courses={selectedCategory?.courses} />
+          </div>
+        </section>
 
         {/* Section: 2 */}
-        <div className="box-content w-full px-4 py-12 mx-auto max-w-maxContentTab lg:max-w-maxContent">
-          <div className="text-xl font-bold md:text-2xl text-slate-300 lg:text-4xl">
-            Top Courses in {catalogPageData?.data?.differentCategory?.name}
-          </div>
-          <div className="py-2">
+        <section className="w-11/12 py-16 mx-auto max-w-maxContent">
+          <h2 className="text-2xl font-bold tracking-tight font-display md:text-3xl">
+            Top courses in{" "}
+            <span className="text-gradient">
+              {catalogPageData?.data?.differentCategory?.name}
+            </span>
+          </h2>
+          <div className="mt-16">
             <CourseSlider
               Id={"slider2"}
               Courses={catalogPageData?.data?.differentCategory?.courses}
             />
           </div>
-        </div>
+        </section>
 
         {/* Section: 3 */}
-        <div className="box-content w-full px-4 py-12 mx-auto max-w-maxContentTab lg:max-w-maxContent">
-          <div className="text-xl font-bold md:text-2xl text-slate-300 lg:text-4xl">
-            Frequently Bought
+        <section className="w-11/12 py-16 mx-auto max-w-maxContent">
+          <h2 className="text-2xl font-bold tracking-tight font-display md:text-3xl">
+            Frequently bought
+          </h2>
+          <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-2 lg:grid-cols-4">
+            {catalogPageData?.data?.mostSellingCourses
+              ?.slice(0, 4)
+              .map((course, i) => (
+                <CourseCard
+                  course={course}
+                  Width={"w-full"}
+                  key={i}
+                  Height={"h-[180px]"}
+                />
+              ))}
           </div>
-          <div className="py-8">
-            <div className="grid grid-cols-1 gap-6 place-items-center lg:grid-cols-2">
-              {catalogPageData?.data?.mostSellingCourses
-                ?.slice(0, 4)
-                .map((course, i) => (
-                  <CourseCard
-                    course={course}
-                    Width={"w-10/12"}
-                    key={i}
-                    Height={"h-[270px]"}
-                  />
-                ))}
-            </div>
-          </div>
-        </div>
+        </section>
       </div>
       {/* Footer */}
       <Footer />

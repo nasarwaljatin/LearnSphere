@@ -35,7 +35,7 @@ const ReviewSlider = () => {
 
   return (
     <div className="text-white">
-      <div className="h-[190px] max-w-maxContentTab lg:max-w-maxContent mt-7 mb-14">
+      <div className="w-full mt-12 mb-24">
         <Swiper
           slidesPerView={4}
           spaceBetween={24}
@@ -71,7 +71,7 @@ const ReviewSlider = () => {
                 ))
             : reviews.map((review, index) => (
                 <SwiperSlide key={index} className="h-[220px] md:h-auto">
-                  <div className="flex flex-col md:gap-3 gap-1 p-3 text-sm rounded-lg bg-gradient-to-br from-[#1c233b] to-[#28344d] text-slate-200 h-full">
+                  <div className="flex flex-col h-full gap-3 p-5 text-sm card text-slate-200">
                     <div className="flex items-center gap-1 md:gap-4">
                       <img
                         src={
@@ -80,18 +80,18 @@ const ReviewSlider = () => {
                             : `https://api.dicebear.com/5.x/initials/svg?seed=${review?.user?.firstName} ${review?.user?.lastName}`
                         }
                         alt="User"
-                        className="object-cover w-5 rounded-full md:w-9 aspect-square"
+                        className="object-cover rounded-full w-9 aspect-square ring-2 ring-white/10"
                       />
                       <div className="flex flex-col px-2 w-[80%]">
                         <h1 className="overflow-hidden text-[12px] font-semibold text-slate-300 text-nowrap text-ellipsis md:text-base">
                           {review?.user?.firstName} {review?.user?.lastName}
                         </h1>
-                        <h2 className="overflow-hidden text-nowrap text-ellipsis md:text-[12px] text-[10px] font-medium text-[#768ecf]">
+                        <h2 className="overflow-hidden text-nowrap text-ellipsis md:text-[12px] text-[10px] font-medium text-teal-300/80">
                           {review?.course?.courseName}
                         </h2>
                       </div>
                     </div>
-                    <p className="font-medium md:text-sm text-[10px] text-slate-400">
+                    <p className="text-sm leading-relaxed text-slate-400">
                       {review?.review?.split(" ").length > truncateWords
                         ? `${review?.review
                             ?.split(" ")

@@ -30,69 +30,60 @@ const timeLine = [
 
 const TimeLineSection = () => {
   return (
-    <div>
-      <div className="flex flex-col items-center py-20 md:flex-row md:justify-between gap-7">
-        <motion.div
-          initial={{ x: "100%", opacity: 0 }}
-          whileInView={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.7 }}
-          className="leftBox flex flex-col gap-9 lg:gap-14 md:w-[45%] w-[90%] text-slate-700 font-inter "
-        >
-          {timeLine.map((el, index) => {
-            return (
-              <div className="relative flex flex-row gap-8" key={index}>
-                <div className="flex items-center justify-center w-12 h-12 bg-white shadow-inner shadow-teal-800 rounded-xl">
-                  <img src={el.logo} alt="img1" />
-                </div>
-                {index !== timeLine.length - 1 && (
-                  <div className="absolute left-6 top-12 h-[100%] w-[2px] bg-slate-400 z-0"></div>
-                )}
-                <div>
-                  <h2 className="font-bold">{el.heading}</h2>
-                  <p className="text-sm font-semibold text-[#008489]">
-                    {el.description}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </motion.div>
-        <motion.div
-          initial={{ x: "-100%", opacity: 0 }}
-          whileInView={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.7 }}
-          className="rightBox relative md:w-[50%] w-[90%]"
-        >
-          <div className="absolute w-full h-4/5 rounded-2xl bg-gradient-to-br from-[#2be2ae] via-[#34cbb4] to-[#f8f8ff] blur-xl -left-4 -top-4 timelineBlock"></div>
-
-          <img
-            src={TimeLineImage}
-            alt="LearnSphere"
-            className="relative object-cover timelineImg"
-          />
-          <div className="absolute bg-gradient-to-r from-teal-800 via-teal-700 to-teal-900 uppercase text-white flex flex-row w-3/4 h-1/4 justify-around items-center py-10 left-[15%] -bottom-12 shadow-md shadow-teal-600">
-            <div className="flex items-center justify-between w-full h-full gap-3 p-3 ">
-              <div className="flex items-center flex-row w-1/2 gap-x-3 border-r-[1px] border-cyan-500">
-                <p className="text-2xl font-semibold md:text-3xl font-inter">
-                  10
-                </p>
-                <p className="text-cyan-400 font-inter md:text-sm text-[10px]">
-                  Years Experience
-                </p>
-              </div>
-
-              <div className="flex flex-row items-center w-1/2 gap-x-3">
-                <p className="text-2xl font-semibold md:text-3xl font-inter">
-                  250
-                </p>
-                <p className="text-cyan-400 font-inter text-[10px] md:text-sm">
-                  Types of Cities
-                </p>
-              </div>
+    <div className="grid items-center gap-14 py-20 md:grid-cols-2">
+      <motion.ol
+        initial={{ opacity: 0, x: -30 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.6 }}
+        className="flex flex-col gap-3"
+      >
+        {timeLine.map((el, index) => (
+          <li
+            key={index}
+            className="relative flex items-center gap-5 p-4 card card-hover"
+          >
+            <div className="grid w-12 h-12 rounded-xl shrink-0 place-items-center bg-white/90 shadow-lg shadow-black/30">
+              <img src={el.logo} alt="" className="w-6 h-6" />
             </div>
+            <div>
+              <h3 className="font-semibold font-display text-slate-100">
+                {el.heading}
+              </h3>
+              <p className="text-sm text-slate-400">{el.description}</p>
+            </div>
+            <span className="ml-auto font-mono text-xs text-slate-600">
+              0{index + 1}
+            </span>
+          </li>
+        ))}
+      </motion.ol>
+
+      <motion.div
+        initial={{ opacity: 0, x: 30 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.6 }}
+        className="relative"
+      >
+        <div className="absolute -inset-6 rounded-[2rem] bg-gradient-to-br from-teal-500/25 to-indigo-500/20 blur-2xl" />
+        <img
+          src={TimeLineImage}
+          alt="Students learning on LearnSphere"
+          className="relative object-cover w-full border rounded-2xl border-white/10"
+        />
+        <div className="absolute flex items-center gap-3 px-4 py-3 -bottom-6 left-6 rounded-2xl glass bg-ink-800/80 shadow-xl shadow-black/40">
+          <span className="grid text-lg rounded-full w-9 h-9 place-items-center bg-gradient-to-br from-teal-400 to-cyan-400 text-slate-950">
+            ✓
+          </span>
+          <div className="text-left">
+            <p className="text-sm font-semibold text-slate-100">
+              Learn at your own pace
+            </p>
+            <p className="text-xs text-slate-400">Anytime, anywhere</p>
           </div>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </div>
   );
 };

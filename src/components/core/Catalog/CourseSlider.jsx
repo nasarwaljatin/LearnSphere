@@ -16,16 +16,18 @@ const CourseSlider = ({ Courses, Id }) => {
     <div className="mt-6 ">
       {Courses?.length ? (
         <div className="relative">
-          <div className="absolute z-30 flex gap-2 md:right-0 sm:right-4 right-6 -top-10">
+          <div className="absolute z-30 flex gap-2 right-0 -top-14">
             <button
               onClick={slideLeft}
-              className="p-1 text-2xl text-teal-800 rounded-full bg-[#1e2736]  hover:text-teal-500 hover:bg-opacity-80"
+              aria-label="Scroll left"
+              className="grid w-9 h-9 text-2xl transition-colors rounded-full place-items-center glass text-slate-300 hover:text-teal-300"
             >
               <MdArrowLeft />
             </button>
             <button
               onClick={slideRight}
-              className="p-1 text-2xl text-teal-800 rounded-full bg-[#1e2736] hover:text-teal-500 hover:bg-opacity-80"
+              aria-label="Scroll right"
+              className="grid w-9 h-9 text-2xl transition-colors rounded-full place-items-center glass text-slate-300 hover:text-teal-300"
             >
               <MdArrowRight />
             </button>
@@ -33,15 +35,15 @@ const CourseSlider = ({ Courses, Id }) => {
 
           <div
             id={Id}
-            className="w-full h-full px-4 mt-12 overflow-x-scroll md:px-0 whitespace-nowrap scroll-smooth scrollbar-hide"
+            className="w-full h-full py-2 overflow-x-scroll whitespace-nowrap scroll-smooth scrollbar-hide"
           >
             {Courses?.map((course, i) => (
-              <CourseCard key={i} course={course} Height={"h-[200px]"} />
+              <CourseCard key={i} course={course} Height={"h-[180px]"} />
             ))}
           </div>
         </div>
       ) : (
-        <p className="text-xl text-purple-200">No Courses Found</p>
+        <p className="py-10 text-center rounded-2xl border border-dashed border-white/10 text-slate-500">No courses found</p>
       )}
     </div>
   );

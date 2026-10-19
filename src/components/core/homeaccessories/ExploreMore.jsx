@@ -29,51 +29,47 @@ const ExploreMore = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center mt-16 md:mt-10">
-      <div className="text-2xl font-semibold text-center md:text-4xl font-inter">
+    <div className="flex flex-col items-center">
+      <span className="eyebrow">Explore</span>
+      <h2 className="mt-4 text-center section-title">
         Unlock the <HighlightText text={"Power of Code"} />
-      </div>
-      <p className="text-sm font-medium text-center md:text-base font-inter text-slate-400">
+      </h2>
+      <p className="mt-4 text-center section-subtitle">
         Learn to build anything you can imagine.
       </p>
-      <div className="parentTab flex w-fit flex-row font-inter rounded-full bg-[#132930] p-1 my-10 sm:mb-36 mb-16">
-        {tabsUsed.map((element, index) => {
-          return (
-            <div
-              className={`md:text-base text-xs flex flex-row items-center gap-2 bg-opacity-65 ${
-                currentTab === element
-                  ? "bg-slate-900 text-slate-200 font-semibold"
-                  : "bg-[#14292e] text-slate-400 font-medium"
-              } rounded-full transition-all cursor-pointer hover:bg-[#2e484e] hover:text-slate-300 px-4 py-2 duration-150 active:bg-slate-500`}
-              key={index}
-              onClick={() => setMyCards(element)}
-            >
-              {element}
-            </div>
-          );
-        })}
+
+      <div className="flex max-w-full gap-1 p-1 mt-10 overflow-x-auto rounded-full glass scrollbar-hide">
+        {tabsUsed.map((element) => (
+          <button
+            key={element}
+            onClick={() => setMyCards(element)}
+            className={`px-4 py-2 text-xs md:text-sm rounded-full whitespace-nowrap transition-all duration-200 ${
+              currentTab === element
+                ? "bg-white text-slate-900 font-semibold shadow"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            {element}
+          </button>
+        ))}
       </div>
 
-      {/* Group of course */}
-
-      <div className="flex flex-col sm:absolute relative sm:translate-y-[90%] sm:flex-row my-7  items-center justify-center sm:gap-x-10 gap-y-10">
-        {courses.map((element, index) => {
-          return (
-            <div
-              className="cursor-pointer"
-              key={index}
-              onClick={() => setCurrentCard(element.heading)}
-            >
-              <CourseCard
-                heading={element.heading}
-                desc={element.description}
-                lessonNum={element.lessionNumber}
-                level={element.level}
-                active={currentCard === element.heading}
-              />
-            </div>
-          );
-        })}
+      <div className="grid w-full grid-cols-1 gap-5 mt-12 md:grid-cols-3">
+        {courses.map((element, index) => (
+          <div
+            className="cursor-pointer"
+            key={index}
+            onClick={() => setCurrentCard(element.heading)}
+          >
+            <CourseCard
+              heading={element.heading}
+              desc={element.description}
+              lessonNum={element.lessionNumber}
+              level={element.level}
+              active={currentCard === element.heading}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
